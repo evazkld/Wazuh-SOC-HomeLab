@@ -37,7 +37,8 @@ All times are as shown in the Wazuh dashboard.
 | Tactic | Technique | ID |
 |--------|-----------|----|
 | Credential Access | Brute Force | T1110 |
-| Persistence / Privilege Escalation | Account Manipulation | T1098 |
+| Persistence | Account Manipulation | T1098 |
+| Defense Evasion / Privilege Escalation | Domain Policy Modification | T1484 |
 
 ## 5. Tier 1 Triage
 
