@@ -54,7 +54,7 @@ Questions I would answer for a real alert like this, with the lab findings:
 
 ## 6. Verdict and Escalation
 
-**Verdict:** true positive, but benign because it was my own simulation.
+**Verdict:** true positive.
 
 In a real environment I would **escalate to Tier 2** because:
 
