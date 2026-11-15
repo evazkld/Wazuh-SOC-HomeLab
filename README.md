@@ -118,4 +118,4 @@ See [incident-report-brute-force.md](incident-report-brute-force.md) for the com
 
 ## Contact
 
-`Zigka Kaldeli Evdokia` · [LinkedIn](<https://www.linkedin.com/in/eva-zigka-kaldeli-1aaa363a5/>)
+`<Evdokia Zigka Kaldeli>` · [LinkedIn](<https://www.linkedin.com/in/eva-zigka-kaldeli-1aaa363a5/>)
