@@ -22,7 +22,7 @@ A hands-on home lab in which I deployed Wazuh as a SIEM/XDR, simulated common at
 | Detection content | Wazuh default Windows ruleset plus one custom rule (ID 100002) |
 
 
-<img width="953" height="202" alt="ActiveAgent" src="https://github.com/user-attachments/assets/b7e09cf8-d1ea-4f11-8966-9a894e9682a6" />
+<img width="953" height="202" alt="01-agent-active" src="https://github.com/user-attachments/assets/1f181908-4c68-46c7-b782-341faebd0e3a" />
 
 
 ## Scenarios
@@ -52,12 +52,12 @@ net user testuser <password> /add
 net localgroup administrators testuser /add
 ```
 
-<img width="747" height="122" alt="Screenshot 2026-11-14 180617" src="https://github.com/user-attachments/assets/a94fd224-baf7-4be3-a1f1-6400cf162bad" />
+<img width="747" height="122" alt="02-powershell-simulation" src="https://github.com/user-attachments/assets/12091d02-3c40-4421-bc0d-39d6dcce0535" />
 
 Wazuh generated one alert for the account creation (event 4720) and two for group membership changes (event 4732): the automatic addition to the Users group and the manual addition to Administrators.
 
-<img width="992" height="512" alt="Screenshot 2026-11-14 185411" src="https://github.com/user-attachments/assets/dde579f8-269f-4876-8eb1-b4108fd8a5ae" />
-<img width="1005" height="553" alt="Screenshot 2026-11-14 185342" src="https://github.com/user-attachments/assets/701f568a-33e2-4e39-bda5-855c43c3908e" />
+<img width="992" height="512" alt="07-account-creation-alert" src="https://github.com/user-attachments/assets/b979fbb2-8128-4017-9835-0c1b29153d18" />
+<img width="1005" height="553" alt="08-group-change-alerts" src="https://github.com/user-attachments/assets/7b91d903-6e1b-43c1-ac8d-a63b16970451" />
 
 ## Custom Detection Rule
 
@@ -82,8 +82,8 @@ Wazuh generated one alert for the account creation (event 4720) and two for grou
 | `level` 10 | Severity on Wazuh's 0-15 scale |
 | `mitre` T1110 | Maps the alert to Brute Force |
 
-<img width="763" height="197" alt="Screenshot 2026-11-15 150528" src="https://github.com/user-attachments/assets/38102fdb-e732-49d1-b2b1-befa97a10092" />
-<img width="691" height="267" alt="Screenshot 2026-11-14 183402" src="https://github.com/user-attachments/assets/5f990777-d9f4-4ab3-8d89-da168f72f3cc" />
+<img width="763" height="197" alt="05-custom-rule-xml" src="https://github.com/user-attachments/assets/cbc355c9-8b07-48fe-a642-687457c252d5" />
+<img width="691" height="267" alt="06-custom-rule-details" src="https://github.com/user-attachments/assets/d0bb7c9f-2ca3-4f01-bfbb-394b2258c266" />
 
 **Tuning note:** I set a low threshold (2 failures) because the Windows account lockout stopped failed attempts from accumulating, so a higher value never fired reliably in the lab. In a production environment I would raise it to roughly 5-10 failures and add source IP and account context to cut down on false positives.
 
@@ -98,9 +98,8 @@ Wazuh generated one alert for the account creation (event 4720) and two for grou
 
 **Key observation:** the failed logons were detected at 17:01:38. About three and a half minutes later (17:05:03) a new account was created, and it was elevated to administrator within about 52 seconds (17:05:55), so the whole chain took roughly four minutes. The Administrators group change was the only level 12 alert in the 24-hour window, which is exactly the kind of event an analyst should prioritise.
 
-<img width="1018" height="363" alt="Screenshot 2026-11-15 144605" src="https://github.com/user-attachments/assets/c8718ed7-af14-4549-8991-9215363c2364" />
-<img width="1005" height="322" alt="Screenshot 2026-11-14 185614" src="https://github.com/user-attachments/assets/3a806f83-90a9-43af-b8ee-f7a59b379378" />
-
+<img width="1018" height="363" alt="03-threat-hunting-overview" src="https://github.com/user-attachments/assets/d012cd63-900a-4674-95f9-2a7570d15a62" />
+<img width="1005" height="322" alt="04-mitre-attack-dashboard" src="https://github.com/user-attachments/assets/88ca8cd7-0205-4d22-be4f-730a7daab9d4" />
 Most of the alerts in the overview are low-severity baseline events generated when the agent first connected (including Security Configuration Assessment checks). The dashboard also lists techniques I did not intentionally trigger, such as Domain Policy Modification and Account Access Removal.
 
 ## Full Incident Report
@@ -118,4 +117,4 @@ See [incident-report-brute-force.md](incident-report-brute-force.md) for the com
 
 ## Contact
 
-`<Evdokia Zigka Kaldeli>` · [LinkedIn](<https://www.linkedin.com/in/eva-zigka-kaldeli-1aaa363a5/>)
+`Evdokia Zigka Kaldeli` · [LinkedIn](<https://www.linkedin.com/in/eva-zigka-kaldeli-1aaa363a5/>)
