@@ -5,7 +5,7 @@
 | **Date** | 14 November 2026 |
 | **Environment** | Wazuh 4.14.8 (SIEM/XDR), Windows 11 Home VM on VirtualBox |
 | **Affected host** | `win11-vm` (agent ID 002, 10.0.2.4) |
-| **Analyst** | `<Evdokia Zigka Kaldeli>` |
+| **Analyst** | `Evdokia Zigka Kaldeli` |
 | **Incident type** | Simulated activity (home lab) |
 | **Severity if real** | High |
 
