@@ -1,6 +1,6 @@
 # Wazuh SOC Home Lab: Brute Force and Persistence Detection on Windows 11
 
-A hands-on home lab in which I deployed Wazuh as a SIEM/XDR, simulated common attacker behaviour on a Windows 11 virtual machine, and investigated the resulting alerts the way a Tier 1 SOC analyst would. The lab covers agent deployment, log analysis, a custom detection rule, MITRE ATT&CK mapping and a written incident report.
+A hands-on home lab in which I deployed Wazuh as a SIEM/XDR, simulated common attacker behaviour on a Windows 11 virtual machine, and investigated the resulting alerts. The lab covers agent deployment, log analysis, a custom detection rule, MITRE ATT&CK mapping and a written incident report.
 
 > All activity was performed on my own isolated virtual machine, for learning purposes only.
 
@@ -21,7 +21,9 @@ A hands-on home lab in which I deployed Wazuh as a SIEM/XDR, simulated common at
 | Hypervisor | Oracle VirtualBox |
 | Detection content | Wazuh default Windows ruleset plus one custom rule (ID 100002) |
 
-![Wazuh agent active](screenshots/01-agent-active.png)
+
+<img width="953" height="202" alt="ActiveAgent" src="https://github.com/user-attachments/assets/b7e09cf8-d1ea-4f11-8966-9a894e9682a6" />
+
 
 ## Scenarios
 
@@ -40,9 +42,6 @@ I locked the Windows session and entered an incorrect password several times. Wi
 | `data.win.system.eventID` | 4625 |
 | `data.win.eventdata.targetUserName` | vboxuser (the VM's local account) |
 
-<!-- TODO: add screenshot 05 (the opened rule 100002 alert), then uncomment the next line.
-![Brute force alert](screenshots/05-brute-force-alert.png)
--->
 
 ### 2. Local account creation and privilege escalation
 
@@ -53,12 +52,12 @@ net user testuser <password> /add
 net localgroup administrators testuser /add
 ```
 
-![PowerShell simulation](screenshots/02-powershell-simulation.png)
+<img width="747" height="122" alt="Screenshot 2026-11-14 180617" src="https://github.com/user-attachments/assets/a94fd224-baf7-4be3-a1f1-6400cf162bad" />
 
 Wazuh generated one alert for the account creation (event 4720) and two for group membership changes (event 4732): the automatic addition to the Users group and the manual addition to Administrators.
 
-![Account creation alert (event 4720)](screenshots/08-account-creation-alert.png)
-![Group change alerts (event 4732)](screenshots/09-group-change-alerts.png)
+<img width="992" height="512" alt="Screenshot 2026-11-14 185411" src="https://github.com/user-attachments/assets/dde579f8-269f-4876-8eb1-b4108fd8a5ae" />
+<img width="1005" height="553" alt="Screenshot 2026-11-14 185342" src="https://github.com/user-attachments/assets/701f568a-33e2-4e39-bda5-855c43c3908e" />
 
 ## Custom Detection Rule
 
@@ -83,8 +82,8 @@ Wazuh generated one alert for the account creation (event 4720) and two for grou
 | `level` 10 | Severity on Wazuh's 0-15 scale |
 | `mitre` T1110 | Maps the alert to Brute Force |
 
-![Custom rule in local_rules.xml](screenshots/06-custom-rule-xml.png)
-![Custom rule details in the Wazuh dashboard](screenshots/07-custom-rule-details.png)
+<img width="763" height="197" alt="Screenshot 2026-11-15 150528" src="https://github.com/user-attachments/assets/38102fdb-e732-49d1-b2b1-befa97a10092" />
+<img width="691" height="267" alt="Screenshot 2026-11-14 183402" src="https://github.com/user-attachments/assets/5f990777-d9f4-4ab3-8d89-da168f72f3cc" />
 
 **Tuning note:** I set a low threshold (2 failures) because the Windows account lockout stopped failed attempts from accumulating, so a higher value never fired reliably in the lab. In a production environment I would raise it to roughly 5-10 failures and add source IP and account context to cut down on false positives.
 
@@ -97,12 +96,12 @@ Wazuh generated one alert for the account creation (event 4720) and two for grou
 | Added to Users group | 4732 | 60170 | Users Group Changed | 5 | n/a |
 | Added to Administrators | 4732 | 60154 | Administrators Group Changed | 12 | Account Manipulation (T1098) |
 
-**Key observation:** the failed logons were detected at 17:01:38. About three and a half minutes later (17:05:03) a new account was created, and it was elevated to administrator within about 52 seconds (17:05:55), so the whole chain took roughly four minutes. The Administrators group change was the only level 12 alert in the 24-hour window, which is exactly the kind of event a SOC analyst should prioritise.
+**Key observation:** the failed logons were detected at 17:01:38. About three and a half minutes later (17:05:03) a new account was created, and it was elevated to administrator within about 52 seconds (17:05:55), so the whole chain took roughly four minutes. The Administrators group change was the only level 12 alert in the 24-hour window, which is exactly the kind of event an analyst should prioritise.
 
-![Threat Hunting overview](screenshots/03-threat-hunting-overview.png)
-![MITRE ATT&CK dashboard](screenshots/04-mitre-attack-dashboard.png)
+<img width="1018" height="363" alt="Screenshot 2026-11-15 144605" src="https://github.com/user-attachments/assets/c8718ed7-af14-4549-8991-9215363c2364" />
+<img width="1005" height="322" alt="Screenshot 2026-11-14 185614" src="https://github.com/user-attachments/assets/3a806f83-90a9-43af-b8ee-f7a59b379378" />
 
-Most of the alerts in the overview are low-severity baseline events generated when the agent first connected (including Security Configuration Assessment checks). The dashboard also lists techniques I did not intentionally trigger, such as Domain Policy Modification and Account Access Removal. I treat these as background noise for now and plan to investigate them in a later iteration.
+Most of the alerts in the overview are low-severity baseline events generated when the agent first connected (including Security Configuration Assessment checks). The dashboard also lists techniques I did not intentionally trigger, such as Domain Policy Modification and Account Access Removal.
 
 ## Full Incident Report
 
@@ -116,13 +115,7 @@ See [incident-report-brute-force.md](incident-report-brute-force.md) for the com
 - How to triage an alert: what to verify, and when to escalate to Tier 2
 - How to use the Threat Hunting and MITRE ATT&CK views to pivot from an alert to its context
 
-## Next Steps
-
-- Add a Linux agent and monitor SSH authentication
-- Simulate more techniques with Atomic Red Team
-- Write a correlation rule that flags "account created, then added to Administrators" within a few minutes
-- Investigate the baseline techniques shown in the MITRE dashboard
 
 ## Contact
 
-`<Your name>` · [LinkedIn](<your LinkedIn URL>)
+`Zigka Kaldeli Evdokia` · [LinkedIn](<https://www.linkedin.com/in/eva-zigka-kaldeli-1aaa363a5/>)
