@@ -93,14 +93,14 @@ Wazuh generated one alert for the account creation (event 4720) and two for grou
 |------|------------------|------------|-------------|-------|--------------|
 | Failed logons | 4625 | 100002 (custom, built on 60122) | Custom Alert: A possible Brute Force attack was detected. | 10 | Brute Force (T1110) |
 | New local user | 4720 | 60109 | User account enabled or created | 8 | Account Manipulation (T1098) |
-| Added to Users group | 4732 | 60170 | Users Group Changed | 5 | n/a |
-| Added to Administrators | 4732 | 60154 | Administrators Group Changed | 12 | Account Manipulation (T1098) |
+| Added to Users group | 4732 | 60170 | Users Group Changed | 5 | Domain Policy Modification (T1484) |
+| Added to Administrators | 4732 | 60154 | Administrators Group Changed | 12 | Domain Policy Modification (T1484) |
 
 **Key observation:** the failed logons were detected at 17:01:38. About three and a half minutes later (17:05:03) a new account was created, and it was elevated to administrator within about 52 seconds (17:05:55), so the whole chain took roughly four minutes. The Administrators group change was the only level 12 alert in the 24-hour window, which is exactly the kind of event an analyst should prioritise.
 
 <img width="1018" height="363" alt="03-threat-hunting-overview" src="https://github.com/user-attachments/assets/d012cd63-900a-4674-95f9-2a7570d15a62" />
 <img width="1005" height="322" alt="04-mitre-attack-dashboard" src="https://github.com/user-attachments/assets/88ca8cd7-0205-4d22-be4f-730a7daab9d4" />
-Most of the alerts in the overview are low-severity baseline events generated when the agent first connected (including Security Configuration Assessment checks). The dashboard also lists techniques I did not intentionally trigger, such as Domain Policy Modification and Account Access Removal.
+Most of the alerts in the overview are low-severity baseline events generated when the agent first connected (including Security Configuration Assessment checks). Wazuh maps the group membership changes to Domain Policy Modification (T1484). On a standalone machine without a domain, I would see them more naturally as account manipulation, but I kept the mapping exactly as Wazuh reports it. Other techniques shown on the dashboard, such as Account Access Removal, come from baseline Windows activity and were not part of my scenarios.
 
 ## Full Incident Report
 
